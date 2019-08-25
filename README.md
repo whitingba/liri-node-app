@@ -11,8 +11,15 @@ In the terminal while in the app's directory you will type on the command line '
 example: node liri.js Korn
 
 4. Include screenshots, gifs or videos of the app functioning
-These can be found in the image directory
+These can be found in the directory /images of app working/concert_search.png
+
 
 5. Contain a link to a deployed version of the app
+https://whitingba.github.io/liri-node-app/
+(Though I thought the instructions said this app could not be deployed)
+
 6. Clearly list the technologies used in the app
+Used axios to fetch the data from Bandsintown.com
+Used moment.js package to 'translate' the date of the concerts
+
 7. State your role in the app development
