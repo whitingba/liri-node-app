@@ -2,6 +2,8 @@ require("dotenv").config();
 
 var keys = require("./keys.js");
 
+var axios = require("axios");
+
 // * You should then be able to access your keys information like so
 
 //   ```js
@@ -29,3 +31,18 @@ var keys = require("./keys.js");
 //      * Venue location
 
 //      * Date of the Event (use moment to format this as "MM/DD/YYYY")
+
+
+var concertInfo = function () {
+
+    var queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+    axios.get(queryURL).then(function (response) {
+
+        console.log("The artist is: " + artist);
+
+    })
+
+}
+
+
