@@ -39,21 +39,22 @@ let queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_i
 //axios get method to query URL
 axios.get(queryURL).then(function (response) {
 
+    //give an error if the artist is not found
     if (!response.data.length) {
         console.log("Error, no results found.");
         return;
     }
 
+    //loop through the response data 
     for (var i = 0; i < response.data.length; i++) {
+        //this array is not named in the JSON data, give it a name to be able to reference it in my console log
         let event = response.data[i];
 
-
-
+        //console log the results:
         console.log(
             `Get excited, because ${artist} will be playing at the ${event.venue.name} in ${event.venue.city}, ${event.venue.region} on ${moment(event.datetime).format("MM/DD/YYYY")}.`
         )
     }
-
 
 
 })
