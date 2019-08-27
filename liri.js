@@ -118,21 +118,13 @@ let movie = process.argv.slice(2).join(" ");
 
 let URL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
 
+
 axios.get(URL).then(function (response) {
 
-    if (!response.data.length) {
-        //console an error message if movie not found
-        console.log("Error, movie title not found");
-    }
+    console.log(
+        `------------------------------ \nMovie Title: ${response.data.Title} \nYear of Release: ${response.data.Year} \nIMDB Rating: ${response.data.imdbRating} \nRotten Tomatoes rating: ${response.data.Ratings[1].Value} \nProduction Country: ${response.data.Country} \nLanguage: ${response.data.Language} \nActors: ${response.data.Actors} \nPlot: ${response.data.Plot} \n------------------------------`
+    );
 
-    for (var i = 0; i < response.data.length; i++) {
-
-
-        console.log(
-            response.data.title
-            //   `Movie Title: ${response.data.title} \nYear of Release: ${response.data.year} \nIMDB Rating: ${response.data.Ratings.imdbRating}`
-        );
-    };
 })
 
 
