@@ -23,37 +23,44 @@ var moment = require('moment');
 
 //      * Date of the Event (use moment to format this as "MM/DD/YYYY")
 
-let artist = process.argv[2];
-//create a function to get the Bandsintown response data from the bandsintown api, passing in a paramater of artist that is plugged into the bandsintown url to search for the artist.
-//let concertInfo = function (artist) {
-
-//URL we will query to get the response data from
-let queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-
-//axios get method to query URL
-axios.get(queryURL).then(function (response) {
-
-    //give an error if the artist is not found
-    if (!response.data.length) {
-        console.log("Error, no results found.");
-        return;
-    }
-
-    //loop through the response data 
-    for (var i = 0; i < response.data.length; i++) {
-        //this array is not named in the JSON data, give it a name to be able to reference it in my console log
-        let event = response.data[i];
-
-        //console log the results:
-        console.log(
-            `Get excited, because ${artist} will be playing at the ${event.venue.name} in ${event.venue.city}, ${event.venue.region} on ${moment(event.datetime).format("MM/DD/YYYY")}.`
-        )
-    }
 
 
-})
+//FIXME: - create a function for this action
+
+// let artist = process.argv.slice(2).join(" ");
+// //create a function to get the Bandsintown response data from the bandsintown api, passing in a paramater of artist that is plugged into the bandsintown url to search for the artist.
+// //let concertInfo = function (artist) {
+
+// //URL we will query to get the response data from
+// let queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+// //axios get method to query URL
+// axios.get(queryURL).then(function (response) {
+
+//     //give an error if the artist is not found
+//     if (!response.data.length) {
+//         console.log("Error, no results found.");
+//         return;
+//     }
+
+//     //loop through the response data 
+//     for (var i = 0; i < response.data.length; i++) {
+//         //this array is not named in the JSON data, give it a name to be able to reference it in my console log
+//         let event = response.data[i];
+
+//         //console log the results:
+//         console.log(
+//             `Get excited, because ${artist} will be playing at the ${event.venue.name} in ${event.venue.city}, ${event.venue.region} on ${moment(event.datetime).format("MM/DD/YYYY")}.`
+//         )
+//     }
+
+
+// })
 
 //}
+
+
+
 
 //TODO:
 
@@ -103,12 +110,30 @@ axios.get(queryURL).then(function (response) {
 
 //    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
-//      * If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-
-//      * It's on Netflix!
 
 //    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
 
+
+let movie = process.argv.slice(2).join(" ");
+
+let URL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+
+axios.get(URL).then(function (response) {
+
+    if (!response.data.length) {
+        //console an error message if movie not found
+        console.log("Error, movie title not found");
+    }
+
+    for (var i = 0; i < response.data.length; i++) {
+
+
+        console.log(
+            response.data.title
+            //   `Movie Title: ${response.data.title} \nYear of Release: ${response.data.year} \nIMDB Rating: ${response.data.Ratings.imdbRating}`
+        );
+    };
+})
 
 
 //TODO:
