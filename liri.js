@@ -8,6 +8,9 @@ var axios = require("axios");
 //require the moment.js package for use in pulling in date from response data on Bandsintown api
 var moment = require('moment');
 
+//require the node-spotify-api
+var Spotify = require('node-spotify-api');
+
 
 
 
@@ -59,7 +62,7 @@ var moment = require('moment');
 
 //}
 
-
+//**************************************************************************************** */
 
 
 //TODO:
@@ -80,52 +83,92 @@ var moment = require('moment');
 
 //    * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
 
-//    * The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
+//    ******* The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
 
-//    * Step One: Visit <https://developer.spotify.com/my-applications/#!/>
+//    ******* Step One: Visit <https://developer.spotify.com/my-applications/#!/>
 
-//    * Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
+//    ******* Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
 
-//    * Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
+//    ******* Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
 
-//    * Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
+//    ******* Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
 
 
-//TODO:
+
+
+let songName = process.argv.slice(2).join(" ");
+
+let spotifySong = function (songName) {
+    var spotify = new Spotify({
+        id: 3b5a7ef2db5442d99ae0404ec9aa9126,
+        secret: b886ee24727947d09f8d9d74c134347b
+    });
+
+
+    spotify.search({
+        type: 'Track',
+        query: songName
+    }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+
+
+        console.log(data.tracks.items[0].album.artists[0].name)
+
+    });
+
+
+
+
+
+    //********************************************************************************************* */
+
 
 // 3. `node liri.js movie-this '<movie name here>'`
 
-//    * This will output the following information to your terminal/bash window:
+                    //    * This will output the following information to your terminal/bash window:
 
-//      ```
-//        * Title of the movie.
-//        * Year the movie came out.
-//        * IMDB Rating of the movie.
-//        * Rotten Tomatoes Rating of the movie.
-//        * Country where the movie was produced.
-//        * Language of the movie.
-//        * Plot of the movie.
-//        * Actors in the movie.
-//      ```
+                    //      ```
+                    //        * Title of the movie.
+                    //        * Year the movie came out.
+                    //        * IMDB Rating of the movie.
+                    //        * Rotten Tomatoes Rating of the movie.
+                    //        * Country where the movie was produced.
+                    //        * Language of the movie.
+                    //        * Plot of the movie.
+                    //        * Actors in the movie.
+                    //      ```
 
-//    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-
-
-//    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
+                    //    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
 
-let movie = process.argv.slice(2).join(" ");
+                    //    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
+                    //****************************************************************************** */
 
-let URL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
 
 
-axios.get(URL).then(function (response) {
+                    //FIXME: - need to correct error then call Mr. Nobody movie and create a function for this to assign to movie-this
+                    // let movie = process.argv.slice(2).join(" ");
 
-    console.log(
-        `------------------------------ \nMovie Title: ${response.data.Title} \nYear of Release: ${response.data.Year} \nIMDB Rating: ${response.data.imdbRating} \nRotten Tomatoes rating: ${response.data.Ratings[1].Value} \nProduction Country: ${response.data.Country} \nLanguage: ${response.data.Language} \nActors: ${response.data.Actors} \nPlot: ${response.data.Plot} \n------------------------------`
-    );
+                    // let URL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
 
-})
+
+// axios.get(URL).then(function (response) {
+
+//     .catch (function(error) {
+//         if (error.response) {
+//             movie = "Mr Nobody"
+//         }
+//     });
+
+// console.log(
+//     `------------------------------ \nMovie Title: ${response.data.Title} \nYear of Release: ${response.data.Year} \nIMDB Rating: ${response.data.imdbRating} \nRotten Tomatoes rating: ${response.data.Ratings[1].Value} \nProduction Country: ${response.data.Country} \nLanguage: ${response.data.Language} \nActors: ${response.data.Actors} \nPlot: ${response.data.Plot} \n------------------------------`
+// );
+
+
+
+// })
 
 
 //TODO:
