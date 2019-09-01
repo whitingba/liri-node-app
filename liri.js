@@ -1,15 +1,45 @@
-//require("dotenv").config();
+require('dotenv').config();
 
-//var keys = require("./keys.js");
+let keys = require('./keys.js');
 
 //require the axios package
-var axios = require("axios");
+let axios = require('axios');
 
 //require the moment.js package for use in pulling in date from response data on Bandsintown api
-var moment = require('moment');
+let moment = require('moment');
 
 //require the node-spotify-api
-var Spotify = require('node-spotify-api');
+let Spotify = require('node-spotify-api');
+
+let commandName = process.argv[2];
+
+let inputData = process.argv[3] ? process.argv.slice(3).join(" ") : "";
+
+
+
+let userChoice = function (doThisChoice, data) {
+
+    switch (doThisChoice) {
+        case 'concert-this':
+            concertInfo(data);
+            break;
+        case 'spotify-this':
+            spotifySong(data);
+            break;
+        case 'movie-this':
+            movieInfo(data);
+            break;
+        case 'do-what-it-says':
+            doWhatItSays(data);
+            break;
+        default:
+            console.log('Sorry, I cannot help you');
+            break;
+    }
+};
+
+
+
 
 
 
@@ -30,37 +60,39 @@ var Spotify = require('node-spotify-api');
 
 //FIXME: - create a function for this action
 
-// let artist = process.argv.slice(2).join(" ");
-// //create a function to get the Bandsintown response data from the bandsintown api, passing in a paramater of artist that is plugged into the bandsintown url to search for the artist.
-// //let concertInfo = function (artist) {
 
-// //URL we will query to get the response data from
-// let queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+//create a function to get the Bandsintown response data from the bandsintown api, passing in a paramater of artist that is plugged into the bandsintown url to search for the artist.
+let concertInfo = function (artist) {
 
-// //axios get method to query URL
-// axios.get(queryURL).then(function (response) {
+    let chosenArtist = (artist == "") ? "Tool" : artist;
 
-//     //give an error if the artist is not found
-//     if (!response.data.length) {
-//         console.log("Error, no results found.");
-//         return;
-//     }
+    //URL we will query to get the response data from
+    let queryURL = "https://rest.bandsintown.com/artists/" + chosenArtist + "/events?app_id=codingbootcamp";
 
-//     //loop through the response data 
-//     for (var i = 0; i < response.data.length; i++) {
-//         //this array is not named in the JSON data, give it a name to be able to reference it in my console log
-//         let event = response.data[i];
+    //axios get method to query URL
+    axios.get(queryURL).then(function (response) {
 
-//         //console log the results:
-//         console.log(
-//             `Get excited, because ${artist} will be playing at the ${event.venue.name} in ${event.venue.city}, ${event.venue.region} on ${moment(event.datetime).format("MM/DD/YYYY")}.`
-//         )
-//     }
+        //give an error if the artist is not found
+        if (!response.data.length) {
+            console.log("Error, no results found.");
+            return;
+        }
+
+        //loop through the response data 
+        for (var i = 0; i < response.data.length; i++) {
+            //this array is not named in the JSON data, give it a name to be able to reference it in my console log
+            let event = response.data[i];
+
+            //console log the results:
+            console.log(
+                `Get excited, because ${chosenArtist} will be playing at the ${event.venue.name} in ${event.venue.city}, ${event.venue.region} on ${moment(event.datetime).format("MM/DD/YYYY")}.`
+            )
+        }
 
 
-// })
+    })
 
-//}
+}
 
 //**************************************************************************************** */
 
@@ -92,83 +124,98 @@ var Spotify = require('node-spotify-api');
 //    ******* Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
 
 //    ******* Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
+//*9***************************************************
+
+let spotify = new Spotify(keys.spotify);
 
 
-
-
-let songName = process.argv.slice(2).join(" ");
+let songName = process.argv.slice(3).join(" ");
 
 let spotifySong = function (songName) {
-    var spotify = new Spotify({
-        id: 3b5a7ef2db5442d99ae0404ec9aa9126,
-        secret: b886ee24727947d09f8d9d74c134347b
-    });
 
+    if (songName === undefined) {
+        songName = "The Sign";
+    }
 
-    spotify.search({
-        type: 'Track',
-        query: songName
-    }, function (err, data) {
-        if (err) {
-            return console.log('Error occurred: ' + err);
+    spotify.search(
+        {
+            type: 'Track',
+            query: songName
+        }, function (err, data) {
+            if (err) {
+                console.log('Error occurred: ' + err);
+                return;
+            }
+
+            var songs = data.tracks.items;
+
+            for (var i = 0; i < songs.length; i++) {
+                console.log(i);
+                console.log("artist(s): " + songs[i].artists.map(getArtistNames));
+                console.log("song name: " + songs[i].name);
+                console.log("preview song: " + songs[i].preview_url);
+                console.log("album: " + songs[i].album.name);
+                console.log("-----------------------------------");
+            }
+            // console.log(data.tracks.items[0].album.artists[0].name)
+
         }
+    );
 
-
-        console.log(data.tracks.items[0].album.artists[0].name)
-
-    });
-
+}
 
 
 
 
-    //********************************************************************************************* */
+
+
+//********************************************************************************************* */
 
 
 // 3. `node liri.js movie-this '<movie name here>'`
 
-                    //    * This will output the following information to your terminal/bash window:
+//    * This will output the following information to your terminal/bash window:
 
-                    //      ```
-                    //        * Title of the movie.
-                    //        * Year the movie came out.
-                    //        * IMDB Rating of the movie.
-                    //        * Rotten Tomatoes Rating of the movie.
-                    //        * Country where the movie was produced.
-                    //        * Language of the movie.
-                    //        * Plot of the movie.
-                    //        * Actors in the movie.
-                    //      ```
+//      ```
+//        * Title of the movie.
+//        * Year the movie came out.
+//        * IMDB Rating of the movie.
+//        * Rotten Tomatoes Rating of the movie.
+//        * Country where the movie was produced.
+//        * Language of the movie.
+//        * Plot of the movie.
+//        * Actors in the movie.
+//      ```
 
-                    //    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-
-
-                    //    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
-                    //****************************************************************************** */
+//    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
 
-
-                    //FIXME: - need to correct error then call Mr. Nobody movie and create a function for this to assign to movie-this
-                    // let movie = process.argv.slice(2).join(" ");
-
-                    // let URL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
-
-
-// axios.get(URL).then(function (response) {
-
-//     .catch (function(error) {
-//         if (error.response) {
-//             movie = "Mr Nobody"
-//         }
-//     });
-
-// console.log(
-//     `------------------------------ \nMovie Title: ${response.data.Title} \nYear of Release: ${response.data.Year} \nIMDB Rating: ${response.data.imdbRating} \nRotten Tomatoes rating: ${response.data.Ratings[1].Value} \nProduction Country: ${response.data.Country} \nLanguage: ${response.data.Language} \nActors: ${response.data.Actors} \nPlot: ${response.data.Plot} \n------------------------------`
-// );
+//    * You'll use the `axios` package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
+//****************************************************************************** */
 
 
 
-// })
+//FIXME: - need to correct error then call Mr. Nobody movie and create a function for this to assign to movie-this
+
+let movieInfo = function (movie) {
+
+
+    let chosenMovie = (movie == "") ? "Mr Nobody" : movie;
+    console.log('movie:' + JSON.stringify(chosenMovie));
+
+    let URL = "http://www.omdbapi.com/?t=" + chosenMovie + "&y=&plot=short&apikey=trilogy";
+
+
+    axios.get(URL).then(function (response) {
+
+
+        console.log(
+            `------------------------------ \nMovie Title: ${response.data.Title} \nYear of Release: ${response.data.Year} \nIMDB Rating: ${response.data.imdbRating} \nRotten Tomatoes rating: ${response.data.Ratings[1].Value} \nProduction Country: ${response.data.Country} \nLanguage: ${response.data.Language} \nActors: ${response.data.Actors} \nPlot: ${response.data.Plot} \n------------------------------`
+        );
+
+
+    })
+};
 
 
 //TODO:
@@ -183,15 +230,6 @@ let spotifySong = function (songName) {
 
 
 
-//TODO:
-// 9. Make it so liri.js can take in one of the following commands:
 
-//    * `concert-this`
-
-//    * `spotify-this-song`
-
-//    * `movie-this`
-
-//    * `do-what-it-says`
-
-
+//calling main process function for this app
+userChoice(commandName, inputData);
