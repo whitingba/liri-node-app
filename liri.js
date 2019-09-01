@@ -128,19 +128,19 @@ let concertInfo = function (artist) {
 
 let spotify = new Spotify(keys.spotify);
 
-
-let songName = process.argv.slice(3).join(" ");
+let grabArtist = function (artist) {
+    return artist.name;
+};
 
 let spotifySong = function (songName) {
 
-    if (songName === undefined) {
-        songName = "The Sign";
-    }
+    let chosenSong = (songName == "") ? "The Sign" : songName;
+
 
     spotify.search(
         {
-            type: 'Track',
-            query: songName
+            type: 'track',
+            query: chosenSong
         }, function (err, data) {
             if (err) {
                 console.log('Error occurred: ' + err);
@@ -150,15 +150,11 @@ let spotifySong = function (songName) {
             var songs = data.tracks.items;
 
             for (var i = 0; i < songs.length; i++) {
-                console.log(i);
-                console.log("artist(s): " + songs[i].artists.map(getArtistNames));
-                console.log("song name: " + songs[i].name);
-                console.log("preview song: " + songs[i].preview_url);
-                console.log("album: " + songs[i].album.name);
-                console.log("-----------------------------------");
+                console.log(
+                    `---------------------------- \nArtist: ${songs[i].artists.map(grabArtist)} \nSong: ${songs[i].name} \nPreview: ${songs[i].preview_url} \nAlbum: ${songs[i].album.name}`
+                );
             }
-            // console.log(data.tracks.items[0].album.artists[0].name)
-
+            console.log(songs.length + " songs found.")
         }
     );
 
