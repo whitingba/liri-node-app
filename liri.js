@@ -42,28 +42,10 @@ let userChoice = function (doThisChoice, data) {
 
 
 
-
-
-
-
-// 1. `node liri.js concert-this <artist/band name here>`
-
-//    * This will search the Bands in Town Artist Events API (`"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"`) for an artist and render the following information about each event to the terminal:
-
-//      * Name of the venue
-
-//      * Venue location
-
-//      * Date of the Event (use moment to format this as "MM/DD/YYYY")
-
-
-
-//FIXME: - create a function for this action
-
-
-//create a function to get the Bandsintown response data from the bandsintown api, passing in a paramater of artist that is plugged into the bandsintown url to search for the artist.
+//create a function to get the Bandsintown data from the bandsintown api, passing in a paramater of chodenArtist that is plugged into the bandsintown url to search for the chosen artist.
 let concertInfo = function (artist) {
 
+    //I created my own default if no artist was listed.
     let chosenArtist = (artist == "") ? "Tool" : artist;
 
     //URL we will query to get the response data from
@@ -94,49 +76,21 @@ let concertInfo = function (artist) {
 
 }
 
-//**************************************************************************************** */
-
-
-//TODO:
-
-// 2. `node liri.js spotify-this-song '<song name here>'`
-
-//    * This will show the following information about the song in your terminal/bash window
-
-//      * Artist(s)
-
-//      * The song's name
-
-//      * A preview link of the song from Spotify
-
-//      * The album that the song is from
-
-//    * If no song is provided then your program will default to "The Sign" by Ace of Base.
-
-//    * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
-
-//    ******* The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
-
-//    ******* Step One: Visit <https://developer.spotify.com/my-applications/#!/>
-
-//    ******* Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
-
-//    ******* Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
-
-//    ******* Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
-//*9***************************************************
 
 let spotify = new Spotify(keys.spotify);
 
+//Function to grabArtist name from Spotify API data
 let grabArtist = function (artist) {
+
     return artist.name;
 };
-
+//Main function created to pull date in from the Spotify API
 let spotifySong = function (songName) {
 
+    //If a song is not listed by the user than a default song - 'The Sign' will display instead
     let chosenSong = (songName == "") ? "The Sign" : songName;
 
-
+    //search method as pulled form the Spotify API documentation
     spotify.search(
         {
             type: 'track',
@@ -146,14 +100,16 @@ let spotifySong = function (songName) {
                 console.log('Error occurred: ' + err);
                 return;
             }
-
+            //variable created to shorten the length of the response object when console logging
             var songs = data.tracks.items;
-
+            //Loop through the songs data that is given back through the search
             for (var i = 0; i < songs.length; i++) {
+                //console log the results
                 console.log(
                     `---------------------------- \nArtist: ${songs[i].artists.map(grabArtist)} \nSong: ${songs[i].name} \nPreview: ${songs[i].preview_url} \nAlbum: ${songs[i].album.name}`
                 );
             }
+            //Final console log that displays the total number of songs that were found in the search
             console.log(songs.length + " songs found.")
         }
     );
